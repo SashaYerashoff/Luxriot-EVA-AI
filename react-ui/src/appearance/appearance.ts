@@ -3,6 +3,7 @@ export const APPEARANCE_STORAGE_KEY = 'eva.ui.appearance.v1'
 export type ThemePresetId = 'eva-deep' | 'graphite' | 'day-shift' | 'amber-watch'
 export type ControlShape = 'precise' | 'balanced' | 'soft'
 export type InterfaceDensity = 'compact' | 'comfortable'
+export type InterfaceScale = 'normal' | 'large'
 export type MotionPreference = 'system' | 'full' | 'reduced'
 export type CustomColorKey = 'canvas' | 'surface' | 'control' | 'text' | 'accent'
 
@@ -36,6 +37,7 @@ export interface AppearancePreferences {
   overrides: Partial<Record<CustomColorKey, string>>
   shape: ControlShape
   density: InterfaceDensity
+  scale: InterfaceScale
   motion: MotionPreference
 }
 
@@ -132,12 +134,14 @@ export const DEFAULT_APPEARANCE: AppearancePreferences = {
   overrides: {},
   shape: 'balanced',
   density: 'comfortable',
+  scale: 'normal',
   motion: 'system',
 }
 
 const PRESET_IDS = new Set(THEME_PRESETS.map((preset) => preset.id))
 const SHAPES = new Set<ControlShape>(['precise', 'balanced', 'soft'])
 const DENSITIES = new Set<InterfaceDensity>(['compact', 'comfortable'])
+const SCALES = new Set<InterfaceScale>(['normal', 'large'])
 const MOTION = new Set<MotionPreference>(['system', 'full', 'reduced'])
 const CUSTOM_COLOR_KEYS: readonly CustomColorKey[] = ['canvas', 'surface', 'control', 'text', 'accent']
 
@@ -174,6 +178,9 @@ export function normalizeAppearance(value: unknown): AppearancePreferences {
     density: DENSITIES.has(candidate.density as InterfaceDensity)
       ? candidate.density as InterfaceDensity
       : DEFAULT_APPEARANCE.density,
+    scale: SCALES.has(candidate.scale as InterfaceScale)
+      ? candidate.scale as InterfaceScale
+      : DEFAULT_APPEARANCE.scale,
     motion: MOTION.has(candidate.motion as MotionPreference)
       ? candidate.motion as MotionPreference
       : DEFAULT_APPEARANCE.motion,

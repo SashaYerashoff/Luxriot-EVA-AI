@@ -738,6 +738,11 @@ export function VideoScreen({
     [feedKeys],
   )
   const expandAll = useCallback(() => setCollapsedSummaries(new Set()), [])
+  const allSummariesCollapsed = feedKeys.length > 0 && feedKeys.every((key) => collapsedSummaries.has(key))
+  const toggleAllSummaries = useCallback(() => {
+    if (allSummariesCollapsed) expandAll()
+    else collapseAll()
+  }, [allSummariesCollapsed, collapseAll, expandAll])
   const toggleSummary = useCallback((key: string) => {
     setCollapsedSummaries((current) => {
       const next = new Set(current)
@@ -797,9 +802,6 @@ export function VideoScreen({
       setActiveTab('settings')
     }
   }, [settingsChannelId, settingsDirty])
-  const editReviewStream = useCallback(() => {
-    if (reviewChannelId != null) requestSettingsChannel(reviewChannelId, true)
-  }, [requestSettingsChannel, reviewChannelId])
   const updateBatch = useCallback((value: string) => {
     setBatch(value)
     setSettingsDirty(true)
@@ -911,9 +913,8 @@ export function VideoScreen({
         customFrom={customFrom} onCustomFrom={setCustomFrom} customTo={customTo} onCustomTo={setCustomTo}
         onApplyCustom={applyCustomRange}
         onRefreshFeed={loadFeed} live={live} onToggleLive={toggleLive}
-        summaryCount={feed.length} onCollapseAll={collapseAll} onExpandAll={expandAll}
+        summaryCount={feed.length} allSummariesCollapsed={allSummariesCollapsed} onToggleAllSummaries={toggleAllSummaries}
         onOpenPreview={() => setReviewPreviewOpen(true)}
-        onEditReviewStream={editReviewStream}
         settingsDirty={settingsDirty}
         onDiscardSettings={discardSettingsDraft}
       />
